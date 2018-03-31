@@ -1,0 +1,3 @@
+erlnet
+
+an erlang TCP network library
