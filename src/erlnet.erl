@@ -10,7 +10,7 @@ start_listen(SockType, SockOpts, ClientCbMod, ErlNetParam) ->
 			undefined -> ErlNetParam#{acceptor_num => 10};
 			_ -> ErlNetParam
 		end,
-	do_start_listen(SockType, SockOpts, ClientCbMod, ErlNetParam).
+	do_start_listen(SockType, SockOpts, ClientCbMod, NewErlNetParam).
 
 do_start_listen(SockType, SockOpts, ClientCbMod, ErlNetParam) ->
 	{ok, _} = erlnet_sup:start_acceptors(SockType, SockOpts, ClientCbMod, ErlNetParam).
