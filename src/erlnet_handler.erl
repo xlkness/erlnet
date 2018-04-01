@@ -3,44 +3,64 @@
 
 -behaviour(gen_server).
 
--export([start_link/1]).
--export([handle_client/3]).
+-export([get_name/1]).
+-export([get_pid/1]).
+-export([handle_client/2]).
+-export([start_link/4]).
 
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 -define(SERVER, ?MODULE).
 
 -record(handler_state, {
-    index = 0
+    index = 0,
+    clients_num = 0,
+    sock_type,
+    client_cb_mod,
+    erl_net_param
 }).
 
-handle_client(HandlerPid, ClientSockFd, ClientCbMod) ->
-    gen_server:call(HandlerPid, {handle_client, ClientSockFd, ClientCbMod}).
+get_name(N) ->
+    list_to_atom(lists:concat([erlnet_handler, "_", N])).
 
-start_link(N) ->
-    gen_server:start_link({local, ?SERVER}, ?MODULE, [N], []).
+get_pid(N) ->
+    erlang:whereis(get_name(N)).
 
-init([N]) ->
-    io:format("start [~w] handler ok.~n", [N]),
-    {ok, #handler_state{index = N}}.
+handle_client(HandlerPid, ClientSockFd) ->
+    gen_server:call(HandlerPid, {handle_client, ClientSockFd}).
 
-handle_call({handle_client, ClientSockFd, ClientCbMod}, _, State) ->
-    StartClientRet =
+start_link(N, SockType, ClientCbMod, ErlNetParam) ->
+    gen_server:start_link({local, get_name(N)}, ?MODULE, [N, SockType, ClientCbMod, ErlNetParam], []).
+
+init([N, SockType, ClientCbMod, ErlNetParam]) ->
+    State = #handler_state{
+        index = N, sock_type = SockType, clients_num = 0,
+        client_cb_mod = ClientCbMod, erl_net_param = ErlNetParam},
+    {ok, State}.
+
+handle_call({handle_client, ClientSockFd}, _, State) ->
+    #handler_state{
+        clients_num = ClientNum, client_cb_mod = ClientCbMod,
+        sock_type = SockType
+    } = State,
+    {StartClientRet, NewState} =
         try ClientCbMod:start_link(ClientSockFd) of
-            {ok, _Pid} -> ok;
+            {ok, Pid} ->
+                ok = SockType:controlling_process(ClientSockFd, Pid),
+                {ok, State#handler_state{clients_num = ClientNum + 1}};
             Ret ->
-                io:format("start client cb(~p) process return error:~p~n",
-                    [erlnet_tcp:peername(ClientSockFd), Ret]),
-                erlnet_tcp:close(ClientSockFd),
-                {error, Ret}
+                error_logger:warning_msg("start client cb(~p) process return error:~p~n",
+                    [SockType:peername(ClientSockFd), Ret]),
+                SockType:close(ClientSockFd),
+                {{error, Ret}, State}
         catch
             E:R ->
-                io:format("start client cb(~p) process return error:~p~n",
-                    [erlnet_tcp:peername(ClientSockFd), {E, R}]),
-                erlnet_tcp:close(ClientSockFd),
-                {error, E, R}
+                error_logger:warning_msg("start client cb(~p) process crash error:~p~n",
+                    [SockType:peername(ClientSockFd), {E, R}]),
+                SockType:close(ClientSockFd),
+                {{error, E, R}, State}
         end,
-    {reply, StartClientRet, State};
+    {reply, StartClientRet, NewState};
 handle_call(_, _, State) -> {reply, unsupported_msg, State}.
 
 handle_cast(_, State) -> {noreply, State}.

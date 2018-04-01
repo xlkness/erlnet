@@ -2,8 +2,8 @@
 %% @doc erlnet public API
 %% @end
 %%%-------------------------------------------------------------------
-
 -module(erlnet_app).
+-author("lkness").
 
 -behaviour(application).
 

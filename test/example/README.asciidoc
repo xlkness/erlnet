@@ -1,0 +1,13 @@
+
+= A simple example
+
+== You can run the the example server as follows:
+
+* rebar3 as test shell
+* tcp_cb_example_sup:start_link().
+* erlnet:start_listen(erlnet_tcp, [{port, 8888}], tcp_cb_example_sup, #{acceptor_num => 10}).
+
+== Then in another machine you can run a client:
+
+* {ok, Fd} = gen_tcp:connect(address, 8888, [binary, {packet, raw}, {active, once}]).
+* gen_tcp:send(Fd, "test string").

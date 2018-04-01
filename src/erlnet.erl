@@ -13,4 +13,11 @@ start_listen(SockType, SockOpts, ClientCbMod, ErlNetParam) ->
 	do_start_listen(SockType, SockOpts, ClientCbMod, NewErlNetParam).
 
 do_start_listen(SockType, SockOpts, ClientCbMod, ErlNetParam) ->
-	{ok, _} = erlnet_sup:start_acceptors(SockType, SockOpts, ClientCbMod, ErlNetParam).
+	case erlnet_sup:is_sup_alive() of
+		true ->
+			{ok, _} = erlnet_sup:start_handlers(SockType, ClientCbMod, ErlNetParam),
+			{ok, _} = erlnet_sup:start_acceptors(SockType, SockOpts, ClientCbMod, ErlNetParam),
+			ok;
+		false ->
+			{error, application_not_started}
+	end.
