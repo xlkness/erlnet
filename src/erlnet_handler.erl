@@ -33,6 +33,7 @@ start_link(N, SockType, ClientCbMod, ErlNetParam) ->
     gen_server:start_link({local, get_name(N)}, ?MODULE, [N, SockType, ClientCbMod, ErlNetParam], []).
 
 init([N, SockType, ClientCbMod, ErlNetParam]) ->
+	ets:new(erlnet_clients, [named_table, set, public]),
     State = #handler_state{
         index = N, sock_type = SockType, clients_num = 0,
         client_cb_mod = ClientCbMod, erl_net_param = ErlNetParam},
@@ -46,7 +47,9 @@ handle_call({handle_client, ClientSockFd}, _, State) ->
     {StartClientRet, NewState} =
         try ClientCbMod:start_link(ClientSockFd) of
             {ok, Pid} ->
+				erlang:monitor(process, Pid),
                 ok = SockType:controlling_process(ClientSockFd, Pid),
+				ets:insert(erlnet_clients, {Pid, ClientSockFD}),
                 {ok, State#handler_state{clients_num = ClientNum + 1}};
             Ret ->
                 error_logger:warning_msg("start client cb(~p) process return error:~p~n",
@@ -65,8 +68,13 @@ handle_call(_, _, State) -> {reply, unsupported_msg, State}.
 
 handle_cast(_, State) -> {noreply, State}.
 
+handle_info({'DOWN', Ref, process, Pid}, State) ->
+	ets:delete(erlnet_clients, Pid),
+	{noreply, State};
 handle_info(_, State) -> {noreply, State}.
 
-terminate(_, _) -> ok.
+terminate(_, _) -> 
+	ets:delete(erlnet_clients),
+	ok.
 
 code_change(_, State, _) -> {ok, State}.
