@@ -49,7 +49,7 @@ handle_call({handle_client, ClientSockFd}, _, State) ->
             {ok, Pid} ->
 				erlang:monitor(process, Pid),
                 ok = SockType:controlling_process(ClientSockFd, Pid),
-				ets:insert(erlnet_clients, {Pid, ClientSockFD}),
+				ets:insert(erlnet_clients, {Pid, ClientSockFd}),
                 {ok, State#handler_state{clients_num = ClientNum + 1}};
             Ret ->
                 error_logger:warning_msg("start client cb(~p) process return error:~p~n",
