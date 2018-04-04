@@ -9,20 +9,16 @@ otp_release:
   - 18.3
 
 jobs:
+  otp_release:
+    - 20.0
+    - 19.1
+    - 18.3
   include:
     - stage: eunit
-      otp_release:
-        - 20.0
-        - 19.1
-        - 18.3
       script:
         - "./rebar3 compile"
         - "./rebar3 eunit -d test/unittest"
     - stage: common_test
-      otp_release:
-        - 20.0
-        - 19.1
-        - 18.3
       script:
         - "./rebar3 ct"
     - stage: deploy
