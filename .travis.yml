@@ -19,8 +19,8 @@ build:
     - master
     - develop
   script:
-    - rebar3 upgrade
-    - rebar3 compile
+    - ./rebar3 upgrade
+    - ./rebar3 compile
 
 test:
   stage: test
@@ -29,4 +29,4 @@ test:
   except:
     - tags
   script:
-    - rebar3 eunit
+    - ./rebar3 eunit
