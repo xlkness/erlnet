@@ -10,7 +10,7 @@ otp_release:
 
 jobs:
   include:
-    - stage: test
+    - stage: eunit
       script:
         - "./rebar3 compile"
         - "./rebar3 eunit -d test/unittest"
