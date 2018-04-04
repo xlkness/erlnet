@@ -3,15 +3,41 @@ before_script:
   - "./rebar3 upgrade"
 
 language: erlang
-otp_release:
-  - 20.0
-  - 19.1
-  - 18.3
+#otp_release:
+#  - 20.0
+#  - 19.1
+#  - 18.3
 
 jobs:
   otp_release:
     - 20.0
+  include:
+    - stage: eunit
+      script:
+        - "./rebar3 compile"
+        - "./rebar3 eunit -d test/unittest"
+    - stage: common_test
+      script:
+        - "./rebar3 ct"
+    - stage: deploy
+      script: true
+
+jobs:
+  otp_release:
     - 19.1
+  include:
+    - stage: eunit
+      script:
+        - "./rebar3 compile"
+        - "./rebar3 eunit -d test/unittest"
+    - stage: common_test
+      script:
+        - "./rebar3 ct"
+    - stage: deploy
+      script: true
+
+jobs:
+  otp_release:
     - 18.3
   include:
     - stage: eunit
