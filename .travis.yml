@@ -20,18 +20,10 @@ otp_release:
 
 
 stages:
-#  - compile
   - test
-  - deploy
+  - common_test
+#  - deploy
 
-#compile:
-#  stage: compile
-#  only:
-#    - master
-#    - develop
-#  script:
-#    - ./rebar3 upgrade
-#    - ./rebar3 compile
 
 test:
   stage: test
@@ -43,6 +35,11 @@ test:
     - ./rebar3 upgrade
     - ./rebar3 compile
     - ./rebar3 as test eunit
+
+common_test:
+  stage: common_test
+  script:
+    - ./rebar3 ct
 
 deploy:
   stage: deploy
