@@ -1,7 +1,6 @@
 before_script:
   - chmod u+x ./rebar3
 
-install: "false"
 language: erlang
 otp_release:
   - 20.0
