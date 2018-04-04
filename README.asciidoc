@@ -1,5 +1,4 @@
 image::https://travis-ci.org/xlkness/erlnet.svg?branch=master[Build]
-image::https://travis-ci.org/xlkness/erlnet.svg?branch=master[Branch,role="right]
 
 = erlnet
 
