@@ -10,7 +10,7 @@ otp_release:
 
 jobs:
   include:
-    - stage: build
+    - stage: compile
       script:
         - ./rebar3 upgrade
         - ./rebar3 compile
