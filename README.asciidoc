@@ -1,3 +1,8 @@
-erlnet
+image::https://travis-ci.org/xlkness/erlnet.svg?branch=master[Build]
+image::https://travis-ci.org/xlkness/erlnet.svg?branch=master[Branch]
 
-an erlang TCP network library
+=erlnet
+
+* An erlang TCP network library
+
+* You can find user's manual in `test/example/README.asciidoc`
