@@ -6,7 +6,7 @@
 %%% @end
 %%% Created : 04. Apr 2018 3:16 PM
 %%%-------------------------------------------------------------------
--module(tcp_connect_tests).
+-module(tcp_connect_SUITE).
 -author("likun").
 
 -include_lib("common_test/include/ct.hrl").
@@ -15,15 +15,15 @@
 
 suite() -> [].
 
-init_per_suite(_Config) ->
+init_per_suite(Config) ->
 	ct:print("===== start common test===="),
-	config.
+	Config.
 
 end_per_suite(_) -> ok.
 
 init_per_group(_, Config) -> Config.
 
-end_per_group(_, Config) -> Config.
+end_per_group(_, _Config) -> ok.
 
 init_per_testcase(_, Config) -> Config.
 
@@ -43,8 +43,7 @@ all() ->
 		{group, tcp_connect}
 	].
 
-one_tcp_connect() ->
-	1 = 1,
+one_tcp_connect(_) ->
 	[].
 
 
