@@ -9,6 +9,7 @@ language: erlang
 #  - 18.3
 
 jobs:
+  language: erlang
   otp_release:
     - 20.0
   include:
@@ -23,6 +24,7 @@ jobs:
       script: true
 
 jobs:
+  language: erlang
   otp_release:
     - 19.1
   include:
@@ -37,6 +39,7 @@ jobs:
       script: true
 
 jobs:
+  language: erlang
   otp_release:
     - 18.3
   include:
