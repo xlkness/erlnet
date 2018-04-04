@@ -8,25 +8,39 @@ otp_release:
   - 18.3
 
 
-stages:
-  - build
-  - test
-##  - deploy
+jobs:
+  include:
+    - stage: build
+      script:
+        ./rebar3 upgrade
+        ./rebar3 compile
 
-build:
-  stage: build
-  only:
-    - master
-    - develop
-  script:
-    - ./rebar3 upgrade
-    - ./rebar3 compile
-
-test:
-  stage: test
-  only:
-    - master
-  except:
-    - tags
-  script:
-    - ./rebar3 as test eunit
+    - stage: test
+      script:
+        ./rebar3 eunit
+    - stage: deploy
+      script: skip
+#
+#
+#stages:
+#  - build
+#  - test
+###  - deploy
+#
+#build:
+#  stage: build
+#  only:
+#    - master
+#    - develop
+#  script:
+#    - ./rebar3 upgrade
+#    - ./rebar3 compile
+#
+#test:
+#  stage: test
+#  only:
+#    - master
+#  except:
+#    - tags
+#  script:
+#    - ./rebar3 as test eunit
