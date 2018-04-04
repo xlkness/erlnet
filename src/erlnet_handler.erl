@@ -68,7 +68,7 @@ handle_call(_, _, State) -> {reply, unsupported_msg, State}.
 
 handle_cast(_, State) -> {noreply, State}.
 
-handle_info({'DOWN', Ref, process, Pid}, State) ->
+handle_info({'DOWN', _Ref, process, Pid, _Reason}, State) ->
 	ets:delete(erlnet_clients, Pid),
 	{noreply, State};
 handle_info(_, State) -> {noreply, State}.
