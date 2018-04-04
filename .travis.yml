@@ -1,6 +1,6 @@
 before_script:
-  - "chmod u+x ./rebar3"
-  - "./rebar3 upgrade"
+#  - "chmod u+x ./rebar3"
+  - "rebar3 upgrade"
 
 language: erlang
 otp_release:
@@ -16,7 +16,7 @@ jobs:
 #        - "./rebar3 eunit"
     - stage: common_test
       script:
-        - "./rebar3 ct"
+        - "rebar3 ct"
     - stage: deploy
       script: true
 
