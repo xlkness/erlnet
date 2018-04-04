@@ -15,6 +15,7 @@ jobs:
         - ./rebar3 compile
         - ./rebar3 eunit
     - stage: common_test
+      script:
         - ./rebar3 ct
     - stage: deploy
       script: true
