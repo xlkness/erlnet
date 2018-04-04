@@ -1,5 +1,5 @@
 
-= erlnet image::https://travis-ci.org/xlkness/erlnet.svg?branch=master[Build]
+= erlnet image:https://travis-ci.org/xlkness/erlnet.svg?branch=master[Build]
 
 * An erlang TCP network library
 
